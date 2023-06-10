@@ -5,6 +5,13 @@ const showProduct = async (req, res) => {
   return res.json(products);
 };
 
+const search = async (req, res) => {
+  const searchTerm = req.query.name;
+  const product = await Product.find({ name: new RegExp(searchTerm, 'i') });
+  return res.json(product)
+};
+
+
 const addProduct = async (req, res) => {
   const product = await Product.create(req.body);
 
@@ -40,5 +47,7 @@ const deleteProduct = async (req, res) => {
   });
 };
 
-export { showProduct, addProduct, productID, updateProduct, deleteProduct}
+
+
+export { showProduct, addProduct, productID, updateProduct, deleteProduct, search}
 
