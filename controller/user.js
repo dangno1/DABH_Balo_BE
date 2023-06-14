@@ -16,6 +16,7 @@ export const getUserByEmail = async (req, res) => {
 
   if(user == null) {
     return res.json({
+      success: false,
       message: "user khong ton tai"
     })
   }
@@ -23,14 +24,16 @@ export const getUserByEmail = async (req, res) => {
   const hashedPassword = await bcrypt.compare(password, user.password);
   if(!hashedPassword) {
     return res.json({
+      success: false,
       message: "sai password"
     })
   } 
 
-  return res.json([
-    user,
-    "dang nhap thanh cong"
-  ])
+  return res.json({
+    success: true,
+    data: user,
+    message: "dang nhap thanh cong"
+  })
 };
 
 export const signup = async (req, res) => {
@@ -46,11 +49,17 @@ export const signup = async (req, res) => {
       });
     }
 
+    if(!name || !email || !password || !role) {
+      return res.status(400).json({
+        message: "Khong Duoc Bo Trong",
+      });
+    }
+
     // Check xem email đăng ký này đã tồn tại trong DB hay chưa?
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({
-        message: "User already exists",
+        message: "Nguoi Dung Da Ton Tai",
       });
     }
 
